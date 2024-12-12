@@ -85,18 +85,15 @@ const formularioRegistro = (req, res) => {
 }
 
 const registrar = async (req, res) => {
-    console.log(req.body)
+    // Validación
+    await check('nombre').notEmpty().withMessage('El nombre no puede ir vacío').run(req);
+    await check('email').isEmail().withMessage('Eso no parece un email').run(req);
+    await check('password').isLength({ min: 6 }).withMessage('El password debe ser de al menos 6 caracteres').run(req);
+    await check('repetir_password').equals(req.body.password).withMessage('Los passwords no coinciden').run(req);
 
-    //validación
-    await check('nombre').notEmpty().withMessage('El nombre no puede ir vacio').run(req)
-    await check('email').isEmail().withMessage('Eso no parece un email').run(req)
-    await check('password').isLength({ min: 6 }).withMessage('El password debe ser de almenos 6 caracteres').run(req)
-    await check('repetir_password').equals(req.body.password).withMessage('Los password no coinciden').run(req)
+    let resultado = validationResult(req);
 
-    let resultado = validationResult(req)
-
-
-    //verificar que el resultado este vacio
+    // Verificar que el resultado esté vacío
     if (!resultado.isEmpty()) {
         return res.render('auth/registro', {
             pagina: 'Crear cuenta',
@@ -106,49 +103,51 @@ const registrar = async (req, res) => {
                 nombre: req.body.nombre,
                 email: req.body.email
             }
-        })
+        });
     }
 
-    //Extraer los datos
+    // Extraer los datos
+    const { nombre, email, password } = req.body;
 
-    const { nombre, email, password } = req.body
-
-    //verificar que el usuario no este duplicado
-    const existeUsuario = await Usuario.findOne({ where: { email } })
+    // Verificar que el usuario no esté duplicado
+    const existeUsuario = await Usuario.findOne({ where: { email } });
     if (existeUsuario) {
         return res.render('auth/registro', {
             pagina: 'Crear cuenta',
             csrfToken: req.csrfToken(),
-            errores: [{ msg: 'El usuario ya esta Registrado' }],
+            errores: [{ msg: 'El usuario ya está registrado' }],
             usuario: {
                 nombre: req.body.nombre,
                 email: req.body.email
             }
-        })
+        });
     }
 
-    //Almacenar un usuario
+    // Ruta de la imagen
+    const image_user = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Almacenar un usuario
     const usuario = await Usuario.create({
         nombre,
         email,
         password,
+        image_user, // Agregar la ruta de la imagen
         token: generateID()
-    })
+    });
 
-    //Enviar email de confirmacion
+    // Enviar email de confirmación
     emailRegistro({
         nombre: usuario.nombre,
         email: usuario.email,
         token: usuario.token
-    })
+    });
 
-
-    //Mostrar mensaje de confirmación
+    // Mostrar mensaje de confirmación
     res.render('templates/message', {
         pagina: 'Cuenta creada correctamente',
         mensaje: 'Hemos enviado un email de confirmación, presiona en el enlace'
-    })
-}
+    });
+};
 
 //Funcion que comprueba una cuenta
 const confirmar = async (req, res) => {

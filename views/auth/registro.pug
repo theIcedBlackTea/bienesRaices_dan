@@ -32,4 +32,10 @@ block contenido
                         a.text-blanco.text-xs(href="/auth/login") ¿Ya tienes cuenta? Inicia Sesión
                         a.text-blanco.text-xs(href="/auth/olvide-password") Olvide mi Password 
 
-                    input(class="w-full bg-naranja hover:bg-orange-600 text-beige font-bold py-3 cursor-pointer" type="submit" value="Crear cuenta")    
+                    // Botón para subir imagen de perfil
+                    div
+                        label.block.text-sm.uppercase.text-blanco.mb-3.font-bold(for="imagenPerfil") Subir imagen de perfil
+                        input#imagenPerfil.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="file" name="imagenPerfil" accept="image/*")
+
+                    // Botón para crear cuenta
+                    input(class="w-full bg-naranja hover:bg-orange-600 text-beige font-bold py-3 cursor-pointer" type="submit" value="Crear cuenta")

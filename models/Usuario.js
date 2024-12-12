@@ -19,6 +19,9 @@ const Usuario = db.define('usuarios', {
     token: {
         type: DataTypes.STRING
     },
+    image_user:{
+        type: DataTypes.STRING
+    },
     confirmado: DataTypes.BOOLEAN
 }, {
     hooks: {
