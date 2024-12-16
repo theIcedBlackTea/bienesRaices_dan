@@ -12,10 +12,10 @@ const Usuario = db.define('usuarios', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    birthDate: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
+	birthDate: {
+		type: DataTypes.STRING,
+		allowNull: false
+	},
     password: {
         type: DataTypes.STRING,
         allowNull: false
@@ -23,7 +23,8 @@ const Usuario = db.define('usuarios', {
     token: {
         type: DataTypes.STRING
     },
-    confirmado: DataTypes.BOOLEAN
+    confirmado: DataTypes.BOOLEAN,
+    image: DataTypes.STRING
 }, {
     hooks: {
         beforeCreate: async function (usuario) {

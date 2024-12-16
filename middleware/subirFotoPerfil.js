@@ -4,7 +4,7 @@ import { generateID } from '../helpers/tokens.js'
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/uploads/')
+        cb(null, './public/profile_images/')
     },
     filename: function (req, file, cb) {
         cb(null, generateID() + path.extname(file.originalname))
