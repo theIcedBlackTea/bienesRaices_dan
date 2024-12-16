@@ -1,5 +1,5 @@
 {
-  "name": "bienesraices220262",
+  "name": "bienesraices220397",
   "version": "1.0.0",
   "description": "Mi primer proyecto de Nodejs",
   "type": "module",
@@ -21,7 +21,7 @@
     "MySQL",
     "Sequelize"
   ],
-  "author": "Esperanza Cruz Galindo",
+  "author": "Esperanza Cruz Galindo", 
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",

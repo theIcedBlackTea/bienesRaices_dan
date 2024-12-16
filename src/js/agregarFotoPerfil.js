@@ -1,7 +1,7 @@
 import { Dropzone } from 'dropzone'
 const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 Dropzone.options.fotoperfil = {
-    dictDefaultMessage: 'Sube tu foto de perfil aqui',
+    dictDefaultMessage: 'Arrastra una foto para hacerla foto de perfil',
     acceptedFiles: '.png, .jpg, .jpeg',
     maxFilesize: 5,
     maxFiles: 1,
