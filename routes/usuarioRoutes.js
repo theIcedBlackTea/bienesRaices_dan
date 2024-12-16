@@ -1,5 +1,6 @@
 import express from "express";
 import { formularioLogin, formularioRegistro, registrar, confirmar, formularioOlvidePassword, resetPassword, comprobarToken, nuevoPassword, autenticar, cerrarSesion } from "../controllers/usuarioController.js";
+import upload from "../middleware/subirImagen.js";
 
 const router = express.Router();
 //Routing
@@ -11,7 +12,7 @@ router.post('/login', autenticar);
 router.post('/cerrar-sesion', cerrarSesion)
 
 router.get('/registro', formularioRegistro);
-router.post('/registro', registrar);
+router.post('/registro', upload.single('imagenPerfil'), registrar);
 
 router.get('/confirmar/:token', confirmar)
 
