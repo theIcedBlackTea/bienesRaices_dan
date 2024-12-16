@@ -1,51 +1,59 @@
-import express from 'express'
-import csurf from 'csurf'
-import cookieParser from 'cookie-parser'
-import usuarioRoutes from './routes/usuarioRoutes.js'
-import propiedadesRoutes from './routes/propiedadesRoutes.js'
-import appRoutes from './routes/appRoutes.js'
-import apiRoutes from './routes/apiRoutes.js'
-import db from './config/db.js'
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import csurf from 'csurf';
 
-//crear la app
-const app = express()
+import usuarioRoutes from './routes/usuarioRoutes.js';
+import propiedadesRoutes from './routes/propiedadesRoutes.js';
+import appRoutes from './routes/appRoutes.js';
+import apiRoutes from './routes/apiRoutes.js';
+import db from './config/db.js';
 
-//habilitar lectura de datos de formularios
+// Crear la app
+const app = express();
 
-app.use(express.urlencoded({ extend: true }))
+// Habilitar lectura de datos de formularios
+app.use(express.urlencoded({ extended: true }));
 
-//Habilitar cookie Parser
-app.use(cookieParser())
+// Habilitar cookie Parser
+app.use(cookieParser());
 
-//habilitar csurf
-app.use(csurf({ cookie: true }))
+// Habilitar csurf
+app.use(csurf({ cookie: true }));
 
-//conexion a la bd
-try {
-    await db.authenticate();
-    db.sync()
-    console.log('Conexion a la bd exitosa!!!')
-} catch (error) {
-    console.log(error)
-}
+// Habilitar pug
+app.set('view engine', 'pug');
+app.set('views', './views');
 
+// Carpeta pública
+app.use(express.static('public'));
+app.use(express.static('assets'));
 
-//habilitar pug
-app.set('view engine', 'pug')
-app.set('views', './views')
+// Routing
+app.use('/', appRoutes);
+app.use('/auth', usuarioRoutes);
+app.use('/', propiedadesRoutes);
+app.use('/api', apiRoutes);
 
-//Carpeta publica
-app.use(express.static('public'))
-
-
-//roting
-app.use('/', appRoutes)
-app.use('/auth', usuarioRoutes)
-app.use('/', propiedadesRoutes)
-app.use('/api', apiRoutes)
-
-//definir un puerto y arrancar el proyecto
+// Definir un puerto
 const port = 3001;
-app.listen(port, () => {
-    console.log(`El servidor esta funcionando en el puerto ${port}`)
-});
+
+// Función para inicializar la aplicación
+const startApp = async () => {
+    try {
+        // Conexión a la base de datos
+        await db.authenticate();
+        await db.sync();
+        console.log('Conexión exitosa a la bd');
+
+        // Iniciar el servidor
+        app.listen(port, () => {
+            console.log(`El servidor se está ejecutando en el puerto ${port}`);
+        });
+    } catch (error) {
+        console.error('Error conectando a la base de datos:', error);
+        process.exit(1); // Salir de la aplicación si la conexión falla
+    }
+};
+
+// Llamar a la función para iniciar
+startApp();

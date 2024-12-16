@@ -19,11 +19,124 @@ const emailRegistro = async (datos) => {
     subject: 'Confirma tu cuenta en BienesRaices.com',
     text: 'Confirma tu cuenta en BienesRaices.com',
     html: `
-        <p>Hola ${nombre}, comprueba tu cuenta en BienesRaices.com</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .image {
+            display: flex;
+            justify-content: center;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF; /* primary */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #FFFFFF; /* primary */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            background-color: #606C38; /* natural */
+            color: #FFFFFF; /* primary */
+            text-align: start;
+            padding: 20px;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            margin-top: 30px;
+            font-size: 28px;
+        }
+        .content {
+            padding: 30px;
+            text-align: justify;
+            line-height: 1.8;
+        }
+        .content p {
+            color: #000000; /* secondary */
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .button {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .button a {
+            background-color: #FAEBD7; /* accent */
+            color: #000000; /* secondary */
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-size: 15px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
 
-        <p>Tu cuenta ya esta lista, solo debes confirmarla en el siguiente enlace: 
-        <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 3001}/auth/confirmar/${token}" >Confirmar cuenta</a> </p>
+        .button a:hover {
+            background-color: #BC6C25; /* dark */
+            transform: scale(1.05);
+        }
 
+        .footer {
+            background-color: #FAEBD7; /* accent */
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #000000; /* secondary */
+        }
+
+        .footer p {
+            margin: 0;
+            color: #000000; /* secondary */
+        }
+
+        .container {
+            border-top: 4px solid #606C38; /* natural */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BienesRaices.com</h1>
+            <img width="100" height="100" src="https://img.icons8.com/?size=100&id=Jhy9yLtZWVXL&format=png&color=000000" alt="real-estate"/>
+        </div>
+        <div class="content">
+            <p>¡Hola <strong>${nombre}</strong>!</p>
+            <h2 style="text-align: center; color: #606C38;">¡Bienvenido a BienesRaices.com!</h2> <!-- natural -->
+            <p>¡Estamos emocionados de darte la bienvenida a nuestra comunidad! En <strong>BienesRaices.com</strong>, trabajamos día a día para ofrecerte las mejores oportunidades en el mercado inmobiliario. Tanto si estás buscando el hogar de tus sueños como si deseas invertir, estás en el lugar ideal.</p>
+            <p>Tu registro ha sido exitoso, y tu cuenta ya está lista. Solo falta un paso para comenzar: haz clic en el enlace a continuación para confirmar tu cuenta y acceder a todas las ventajas que ofrecemos:</p>
+            <div class="button">
+            <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 3001}/auth/confirm/${token}" >Confirmar cuenta</a> </p>            </div>
+            <p style="text-align: center;">Si no era para ti, simplemente ignora este correo.</p>
+        </div>
+
+        <div>
+            <h3 style="text-align: center;">Atentamente</h3>
+        </div>
+        <div class="image">
+            <img src="https://xdddd.s3.us-east-2.amazonaws.com/firma.png" alt="firma" width="170px" height="140px">
+        </div>
+        <div>
+            <h4 style="text-align: center;">Daniel Bravo Godinez</h4>
+            <h4 style="text-align: center;">CEO de Bienes Raices</h4>
+        </div>
+        
+        </div>
+    </div>
+</body>
+</html>
         <p>Si tu no creaste esta cuenta, puedes ignorar este email</p>
     `
   })
@@ -48,12 +161,124 @@ const emailOlvidePassword = async (datos) => {
     subject: 'Restablece tu password en BienesRaices.com',
     text: 'Restablece tu password en BienesRaices.com',
     html: `
-      <p>Hola ${nombre}, has solicitado restablecer tu password en BienesRaices.com</p>
+      <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .image {
+            display: flex;
+            justify-content: center;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF; /* primary */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #FFFFFF; /* primary */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            background-color: #606C38; /* natural */
+            color: #FFFFFF; /* primary */
+            text-align: start;
+            padding: 20px;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            margin-top: 30px;
+            font-size: 28px;
+        }
+        .content {
+            padding: 30px;
+            text-align: justify;
+            line-height: 1.8;
+        }
+        .content p {
+            color: #000000; /* secondary */
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .button {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .button a {
+            background-color: #FAEBD7; /* accent */
+            color: #000000; /* secondary */
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-size: 15px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
 
-      <p>Sigue el siguiente enlace para generar un password nuevo: 
-      <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 3001}/auth/olvide-password/${token}" >Restablecer password</a> </p>
+        .button a:hover {
+            background-color: #BC6C25; /* dark */
+            transform: scale(1.05);
+        }
 
-      <p>Si tu no solicitaste el cambio de password, puedes ignorar este email</p>
+        .footer {
+            background-color: #FAEBD7; /* accent */
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #000000; /* secondary */
+        }
+
+        .footer p {
+            margin: 0;
+            color: #000000; /* secondary */
+        }
+
+        .container {
+            border-top: 4px solid #606C38; /* natural */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BienesRaices.com</h1>
+            <img width="100" height="100" src="https://img.icons8.com/?size=100&id=Jhy9yLtZWVXL&format=png&color=000000" alt="real-estate"/>
+        </div>
+        <div class="content">
+            <p>¡Hola <strong>${nombre}</strong>!</p>
+            <h2 style="text-align: center; color: #606C38;">Recuperacion de cuenta de BienesRaices.com</h2>
+            <p>Hemos recibido una peticion de solicitud de contraseña, no te preocupes, solo haz click abajo y sigue con el proceso para restablecer tu contraseña.</p>
+            <div class="button">
+              <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 3001}/auth/olvide-password/${token}" >Restablecer password</a> </p>
+            <p style="text-align: center;">Si no era para ti, simplemente ignora este correo.</p>
+        </div>
+
+        <div>
+            <h3 style="text-align: center;">Atentamente</h3>
+        </div>
+        <div class="image">
+            <img src="https://xdddd.s3.us-east-2.amazonaws.com/firma.png" alt="firma" width="170px" height="140px">
+        </div>
+        <div>
+            <h4 style="text-align: center;">Daniel Bravo Godinez</h4>
+            <h4 style="text-align: center;">CEO de Bienes Raices</h4>
+        </div>
+        
+        </div>
+    </div>
+</body>
+</html>
+     
   `
   })
 

@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize'
 import db from '../config/db.js'
-
 const Propiedad = db.define('propiedades', {
     id: {
         type: DataTypes.UUID,
@@ -48,9 +47,15 @@ const Propiedad = db.define('propiedades', {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
+    },
+    tipo: { 
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'venta',
+        validate: {
+            isIn: [['venta', 'renta']] 
+        }
     }
-
-
 });
 
-export default Propiedad
+export default Propiedad;
