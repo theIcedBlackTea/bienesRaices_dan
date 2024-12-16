@@ -85,15 +85,41 @@ const formularioRegistro = (req, res) => {
 }
 
 const registrar = async (req, res) => {
-    // Validación
-    await check('nombre').notEmpty().withMessage('El nombre no puede ir vacío').run(req);
-    await check('email').isEmail().withMessage('Eso no parece un email').run(req);
-    await check('password').isLength({ min: 6 }).withMessage('El password debe ser de al menos 6 caracteres').run(req);
-    await check('repetir_password').equals(req.body.password).withMessage('Los passwords no coinciden').run(req);
+    console.log(req.body)
 
-    let resultado = validationResult(req);
+    //validación
+    await check('nombre').notEmpty().withMessage('El nombre no puede ir vacio').run(req)
+    await check('email').isEmail().withMessage('Eso no parece un email').run(req)
+    await check('birthDate')
+    .isISO8601()
+    .withMessage('La fecha debe tener un formato válido (AAAA-MM-DD).')
+    .custom((birthDate) => {
+        const fecha = new Date(birthDate)
+        const hoy = new Date()
 
-    // Verificar que el resultado esté vacío
+        // Verifica que la fecha no sea futura
+        if (fecha > hoy) {
+            throw new Error('La fecha de nacimiento no puede ser en el futuro.')
+        }
+
+        // Verifica que el usuario tenga al menos 18 años
+        const edadMinima = 18
+        const anios = hoy.getFullYear() - fecha.getFullYear()
+        const mes = hoy.getMonth() - fecha.getMonth()
+        const dia = hoy.getDate() - fecha.getDate()
+
+        if (anios < edadMinima || (anios === edadMinima && (mes < 0 || (mes === 0 && dia < 0)))) {
+            throw new Error('Debes tener al menos 18 años.')
+        }
+        return true
+    }).run(req)
+    await check('password').isLength({ min: 6 }).withMessage('El password debe ser de almenos 6 caracteres').run(req)
+    await check('repetir_password').equals(req.body.password).withMessage('Los password no coinciden').run(req)
+
+    let resultado = validationResult(req)
+
+
+    //verificar que el resultado este vacio
     if (!resultado.isEmpty()) {
         return res.render('auth/registro', {
             pagina: 'Crear cuenta',
@@ -101,53 +127,54 @@ const registrar = async (req, res) => {
             errores: resultado.array(),
             usuario: {
                 nombre: req.body.nombre,
-                email: req.body.email
+                email: req.body.email,
+                birthDate: req.body.birthDate
             }
-        });
+        })
     }
 
-    // Extraer los datos
-    const { nombre, email, password } = req.body;
+    //Extraer los datos
 
-    // Verificar que el usuario no esté duplicado
-    const existeUsuario = await Usuario.findOne({ where: { email } });
+    const { nombre, email, birthDate, password } = req.body
+
+    //verificar que el usuario no este duplicado
+    const existeUsuario = await Usuario.findOne({ where: { email } })
     if (existeUsuario) {
         return res.render('auth/registro', {
             pagina: 'Crear cuenta',
             csrfToken: req.csrfToken(),
-            errores: [{ msg: 'El usuario ya está registrado' }],
+            errores: [{ msg: 'El usuario ya esta Registrado' }],
             usuario: {
                 nombre: req.body.nombre,
-                email: req.body.email
+                email: req.body.email,
+                birthDate: req.body.birthDate
             }
-        });
+        })
     }
 
-    // Ruta de la imagen
-    const image_user = req.file ? `/uploads/${req.file.filename}` : null;
-
-    // Almacenar un usuario
+    //Almacenar un usuario
     const usuario = await Usuario.create({
         nombre,
         email,
+        birthDate,
         password,
-        image_user, // Agregar la ruta de la imagen
         token: generateID()
-    });
+    })
 
-    // Enviar email de confirmación
+    //Enviar email de confirmacion
     emailRegistro({
         nombre: usuario.nombre,
         email: usuario.email,
         token: usuario.token
-    });
+    })
 
-    // Mostrar mensaje de confirmación
+
+    //Mostrar mensaje de confirmación
     res.render('templates/message', {
         pagina: 'Cuenta creada correctamente',
         mensaje: 'Hemos enviado un email de confirmación, presiona en el enlace'
-    });
-};
+    })
+}
 
 //Funcion que comprueba una cuenta
 const confirmar = async (req, res) => {
