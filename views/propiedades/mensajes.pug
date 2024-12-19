@@ -13,7 +13,8 @@ block contenido
                         .flex
                             img.rounded-full.mr-5.object-cover.w-24(src=`/profile_images/${mensaje.usuario.image}`)
                             div
-                                p.font-bold= mensaje.usuario.nombre  
+                                p.font-bold= mensaje.usuario.nombre 
+                                p.text-xl.font-bold Propuesta: $#{mensaje.propuesta.propuesta}  
                                 p.text-gray-800.py-3= mensaje.mensaje
                                 p.text-xs correo: 
                                     span.text-xs= mensaje.usuario.email  
@@ -33,7 +34,6 @@ block contenido
                                                         span.text-xs= respuesta.usuario.email  
                                                     p.text-xs.text-action Enviado: 
                                                         span.text-action= formatearFecha(respuesta.createdAt)
-
                         form(action=`/mensajes/responder/${mensaje.id}` method="POST")
                             input(type="hidden" name="_csrf" value= csrfToken)
                             textarea.w-full.p-2.border.border-gray-300.rounded-lg.my-5.resize-none(name="respuesta" placeholder="Escribe una respuesta")

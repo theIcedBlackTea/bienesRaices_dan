@@ -1,6 +1,7 @@
 extends ../layout/admin 
 
 block contenido
+    p=JSON.stringify(mensajes,null,2)
     h2.text-2xl.font-bold.text-center= page
 
     a.rounded-lg.py-2.px-10.bg-action.text-sm.font-bold.text-center.text-white.uppercase.my-5.inline-block.w-full(href="/mis-propiedades" class="hover:bg-hoverAction sm:w-auto transition ease-in-out") Volver
@@ -13,7 +14,8 @@ block contenido
                         .flex
                             img.rounded-full.mr-5.object-cover.w-24(src=`/profile_images/${mensaje.usuario.image}`)
                             div
-                                p.font-bold= mensaje.usuario.nombre  
+                                p.font-bold= mensaje.usuario.nombre 
+                                p.text-gray-800.py-3 Propuesta: $#{mensaje.propuesta.propuesta}
                                 p.text-gray-800.py-3= mensaje.mensaje
                                 p.text-xs correo: 
                                     span.text-xs= mensaje.usuario.email  

@@ -1,0 +1,25 @@
+extends ../layout/admin 
+
+block contenido
+    h2.text-2xl.font-bold.text-center= page
+
+    a.rounded-lg.py-2.px-10.bg-action.text-sm.font-bold.text-center.text-white.uppercase.my-5.inline-block.w-full(href="/mis-propiedades" class="hover:bg-hoverAction sm:w-auto transition ease-in-out") Volver
+
+    div.mx-auto.max-w-4xl(style="margin-bottom: 75px;")
+        if propuestas.length
+            ul 
+                each propuesta in propuestas 
+                    li.border-gray-200.border-b.p-5.mt-5.bg-formBackground.shadow.rounded-xl
+                        .flex
+                            img.rounded-full.mr-5.object-cover.w-24(src=`/profile_images/${propuesta.usuario.image}`)
+                            div
+                                p.text-2xl.font-bold= propuesta.usuario.nombre  
+                                p.text-xl.font-bold Propuesta: $#{propuesta.propuesta}
+                                p.text-gray-800.py-3= propuesta.mensaje
+                                p.text-xs correo: 
+                                    span.text-xs= propuesta.usuario.email  
+                                p.text-xs.text-action Enviado: 
+                                    span.text-action= formatearFecha(propuesta.createdAt)
+                                a(href=`/mensajes/${propuesta.propiedadID}` class="text-sm text-white")= `responder` 
+        else 
+            p.text-center.text-gray-600.p-5 No tienes ninguna propuesta

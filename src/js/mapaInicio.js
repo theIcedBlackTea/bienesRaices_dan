@@ -61,12 +61,16 @@
             })
                 .addTo(mapa)
                 .bindPopup(`
-            <p class="text-indigo-600 font-bold">${propiedad.categoria.nombre}</p>
-            <h1 class="text-xl font-extrabold uppercase my-5"> ${propiedad.titulo} </h1>
-            <img src="/uploads/${propiedad?.imagen}" alt="Imagen de la propiedad ${propiedad.titulo}">
-            <p class="text-gray-600 font-bold">${propiedad.precio.nombre}</p>
-            <a href="/propiedad/${propiedad.id}" class="bg-indigo-600 block p-2 text-center font-bold uppercase">Ver Propiedad</a>
-            `)
+                    <div style="text-align: center;">
+                        <p class="text-indigo-600 font-bold">${propiedad.categoria.nombre}</p>
+                        <h1 class="text-xl font-extrabold uppercase my-5">${propiedad.titulo}</h1>
+                        <img src="/uploads/${propiedad?.imagen}" alt="Imagen de la propiedad ${propiedad.titulo}" style="max-width: 100%; height: auto;">
+                        <p class="text-gray-600 font-bold">${propiedad.precio.nombre}</p>
+                        <a href="/propiedad/${propiedad.id}" class="bg-red-500 text-black block p-2 text-center font-bold uppercase" style="margin-top: 10px; display: inline-block;">Ver Propiedad</a>
+                    </div>
+                `)
+                
+                
 
             markers.addLayer(marker)
         })

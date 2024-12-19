@@ -35,7 +35,7 @@ app.use('/', propiedadesRoutes);
 app.use('/api', apiRoutes);
 
 // Definir un puerto
-const port = 3001;
+const port = process.env.PORT||3005;
 
 // Función para inicializar la aplicación
 const startApp = async () => {
