@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator'
 import { Precio, Categoria, Propiedad, Mensaje, Usuario, Respuesta } from '../models/index.js'
 import { unlink } from 'node:fs/promises'
 import { esVendedor, formatearFecha } from '../helpers/index.js'
+import Propuesta from '../models/Propuestas.js';
 
 const admin = async (req, res) => {
 
@@ -343,22 +344,20 @@ const mostrarPropiedad = async (req, res) => {
 
 //? Enviar mensajes
 const enviarMensaje = async (req, res) => {
-    const { id } = req.params
-    // Comprobar que la propieadad exista
+    const { id } = req.params;
     const propiedad = await Propiedad.findByPk(id, {
         include: [
             { model: Precio, as: 'precio' },
             { model: Categoria, as: 'categoria' },
             { model: Usuario, as: 'usuario' }
         ]
-    })
+    });
     if (!propiedad) {
-        return res.redirect('/404')
+        return res.redirect('/404');
     }
-    
-    // Validacion
-    let resultado = validationResult(req)
-    const usuarioAdministrador = req.usuario
+
+    let resultado = validationResult(req);
+    const usuarioAdministrador = req.usuario;
     if (!resultado.isEmpty()) {
         return res.render('propiedades/mostrar', {
             usuarioAdministrador,
@@ -368,26 +367,61 @@ const enviarMensaje = async (req, res) => {
             usuario: req.usuario,
             esVendedor: esVendedor(req.usuario?.id, propiedad.usuarioID),
             errores: resultado.array()
-        })
+        });
     }
 
-    const { mensaje } = req.body
-    const { id: propiedadID } = req.params
-    const { id: usuarioID } = req.usuario
+    const { mensaje, propuesta, action } = req.body;
+    const { id: propiedadID } = req.params;
+    const { id: usuarioID } = req.usuario;
 
-    //Almacenar el mensaje
-    await Mensaje.create({
-        mensaje,
-        propiedadID,
-        usuarioID
-    })
-    
-    res.redirect('/')
-}
+    if (action === 'Enviar Mensaje') {
+        // Almacenar el mensaje
+        await Mensaje.create({
+            mensaje,
+            propiedadID,
+            usuarioID
+        });
+
+        return res.redirect(`/propiedad/${propiedadID}?enviado=true`);
+    }
+
+    if (action === 'Enviar Propuesta') {
+        // Obtener el rango de precios de la propiedad
+        const precioRango = propiedad.precio.nombre.split(' - ');
+        const precioMin = parseInt(precioRango[0].replace(/[^0-9]/g, ''));
+        const precioMax = parseInt(precioRango[1].replace(/[^0-9]/g, ''));
+
+        // Validar que la propuesta esté dentro del rango de precios
+        if (propuesta < precioMin || propuesta > precioMax) {
+            return res.render('propiedades/mostrar', {
+                usuarioAdministrador,
+                propiedad,
+                page: propiedad.titulo,
+                csrfToken: req.csrfToken(),
+                usuario: req.usuario,
+                esVendedor: esVendedor(req.usuario?.id, propiedad.usuarioID),
+                errores: resultado.array(),
+                error: 'La propuesta debe estar dentro del rango de precios de la propiedad.'
+            });
+        }
+
+        // Almacenar la propuesta
+        await Propuesta.create({
+            mensaje,
+            propuesta,
+            propiedadID,
+            usuarioID
+        });
+
+        return res.redirect(`/propiedad/${propiedadID}?enviado=true`);
+    }
+
+    res.redirect(`/propiedad/${propiedadID}`);
+};
 
 //? Leer mensajes recibidos
 const verMensajes = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
 
     // Validar que la propiedad exista
     const propiedad = await Propiedad.findByPk(id, {
@@ -400,10 +434,10 @@ const verMensajes = async (req, res) => {
                 ]
             },
         ],
-    })
+    });
 
     if (!propiedad) {
-        return res.redirect('/mis-propiedades')
+        return res.redirect('/mis-propiedades');
     }
 
     // Verificar si el usuario tiene acceso
@@ -416,7 +450,7 @@ const verMensajes = async (req, res) => {
 
     // Si el usuario no tiene ningún mensaje relacionado, redirigimos a la página de propiedades
     if (mensajesFiltrados.length === 0) {
-        return res.redirect('/mis-propiedades')
+        return res.redirect('/mis-propiedades');
     }
 
     res.render('propiedades/mensajes', {
@@ -424,8 +458,8 @@ const verMensajes = async (req, res) => {
         csrfToken: req.csrfToken(),
         mensajes: mensajesFiltrados,
         formatearFecha
-    })
-}
+    });
+};
 
 //? Responder mensajes
 const responderMensaje = async (req, res) => {
@@ -506,8 +540,36 @@ const obtenerConversaciones = async (req, res) => {
         res.redirect('/mis-propiedades')
     }
 }
+const enviarPropuesta = async (req, res) => {
+    const { mensaje, propuesta, propiedadID, precioMin, precioMax } = req.body;
+    const { id: usuarioID } = req.usuario;
 
+    // Validar que los campos no estén vacíos
+    if (!mensaje || !propuesta || !precioMin || !precioMax) {
+        return res.redirect(`/propiedad/${propiedadID}?error=Todos los campos son obligatorios.`);
+    }
+
+    // Validar que la propuesta esté dentro del rango de precios
+    if (propuesta < precioMin || propuesta > precioMax) {
+        return res.redirect(`/propiedad/${propiedadID}?error=La propuesta debe estar dentro del rango de precios de la propiedad.`);
+    }
+
+    // Almacenar la propuesta
+    await Propuesta.create({
+        mensaje,
+        propuesta,
+        precioMin,
+        precioMax,
+        propiedadID,
+        usuarioID
+    });
+
+    res.redirect(`/propiedad/${propiedadID}?enviado=true`);
+};
+
+// Exportar las funciones del controlador    
 export {
+    enviarPropuesta,
     admin,
     crear,
     guardar,
