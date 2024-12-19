@@ -31,7 +31,8 @@ const admin = async (req, res) => {
                 include: [
                     { model: Categoria, as: 'categoria' },
                     { model: Precio, as: 'precio' },
-                    { model: Mensaje, as: 'mensajes' }
+                    { model: Mensaje, as: 'mensajes' },
+                    { model: Propuesta, as: 'propuestas' }
                 ],
             }),
             Propiedad.count({
@@ -497,6 +498,41 @@ const responderMensaje = async (req, res) => {
         res.redirect('/mis-propiedades')
     }
 }
+// Ver mis propuestas 
+const verPropuestas = async (req, res) => {
+    const { id } = req.params;
+
+    // Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id, {
+        include: [
+            {
+                model: Propuesta, as: 'propuestas',
+                include: [
+                    { model: Usuario.scope('eliminarPassword'), as: 'usuario' }
+                ]
+            },
+        ],
+    });
+
+    if (!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    // Verificar si el usuario tiene acceso
+    const usuarioID = req.usuario.id;
+
+    // Filtrar las propuestas para mostrar solo las del usuario actual que está relacionado su propuesta con sólo a "x" propiedad exclusivamente jajaja
+    const propuestasFiltradas = propiedad.propuestas.filter(propuesta => 
+        propuesta.usuarioID === usuarioID || propuesta.propiedadID === propiedad.id
+    );
+
+    res.render('propiedades/propuesta', {
+        page: 'Propuestas recibidas',
+        csrfToken: req.csrfToken(),
+        propuestas: propuestasFiltradas,
+        formatearFecha
+    });
+};
 
 //? Ver mis conversaciones
 const obtenerConversaciones = async (req, res) => {
@@ -583,6 +619,7 @@ export {
     verMensajes,
     cambiarEstado,
     responderMensaje,
-    obtenerConversaciones
+    obtenerConversaciones,
+    verPropuestas
 }
 

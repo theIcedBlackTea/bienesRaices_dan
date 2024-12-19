@@ -1,6 +1,6 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios, eliminar, mostrarPropiedad, enviarMensaje, verMensajes, cambiarEstado, responderMensaje, obtenerConversaciones } from '../controllers/propiedadesController.js';
+import { verPropuestas,admin, crear, guardar, agregarImagen, almacenarImagen, editar, guardarCambios, eliminar, mostrarPropiedad, enviarMensaje, verMensajes, cambiarEstado, responderMensaje, obtenerConversaciones } from '../controllers/propiedadesController.js';
 import protegerRuta from '../middleware/protegerRuta.js';
 import upload from '../middleware/subirImagen.js';
 import identificarUsuario from '../middleware/identificarUsuario.js';
@@ -83,6 +83,12 @@ router.post('/propiedad/:id',
 router.get('/mensajes/:id',
     protegerRuta,
     verMensajes
+);
+
+//? Ver los propuestas
+router.get('/propuestas/:id',
+    protegerRuta,
+    verPropuestas
 );
 
 //? Responder a los mensajes
