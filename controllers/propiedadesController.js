@@ -2,7 +2,7 @@ import { validationResult } from 'express-validator'
 import { Precio, Categoria, Propiedad, Mensaje, Usuario, Respuesta } from '../models/index.js'
 import { unlink } from 'node:fs/promises'
 import { esVendedor, formatearFecha } from '../helpers/index.js'
-import Propuesta from '../models/Propuestas.js';
+import Propuesta from '../models/Propuesta.js';
 
 const admin = async (req, res) => {
 
@@ -371,48 +371,54 @@ const enviarMensaje = async (req, res) => {
         });
     }
 
-    const { mensaje, propuesta, action } = req.body;
+    const { mensaje, propuesta } = req.body;
     const { id: propiedadID } = req.params;
     const { id: usuarioID } = req.usuario;
 
-    if (action === 'Enviar Mensaje') {
-        // Almacenar el mensaje
-        await Mensaje.create({
-            mensaje,
-            propiedadID,
-            usuarioID
-        });
+    let nuevoMensaje;
+    if (mensaje || propuesta) {
+        if (propuesta) {
+            // Obtener el rango de precios de la propiedad
+            const precioRango = propiedad.precio.nombre.split(' - ');
+            const precioMin = parseInt(precioRango[0].replace(/[^0-9]/g, ''));
+            const precioMax = parseInt(precioRango[1].replace(/[^0-9]/g, ''));
 
-        return res.redirect(`/propiedad/${propiedadID}?enviado=true`);
-    }
+            // Validar que la propuesta esté dentro del rango de precios
+            if (propuesta < precioMin || propuesta > precioMax) {
+                return res.render('propiedades/mostrar', {
+                    usuarioAdministrador,
+                    propiedad,
+                    page: propiedad.titulo,
+                    csrfToken: req.csrfToken(),
+                    usuario: req.usuario,
+                    esVendedor: esVendedor(req.usuario?.id, propiedad.usuarioID),
+                    errores: resultado.array(),
+                    error: 'La propuesta debe estar dentro del rango de precios de la propiedad.'
+                });
+            }
 
-    if (action === 'Enviar Propuesta') {
-        // Obtener el rango de precios de la propiedad
-        const precioRango = propiedad.precio.nombre.split(' - ');
-        const precioMin = parseInt(precioRango[0].replace(/[^0-9]/g, ''));
-        const precioMax = parseInt(precioRango[1].replace(/[^0-9]/g, ''));
+            // Almacenar la propuesta
+            const nuevaPropuesta = await Propuesta.create({
+                propuesta,
+                propiedadID,
+                usuarioID
+            });
 
-        // Validar que la propuesta esté dentro del rango de precios
-        if (propuesta < precioMin || propuesta > precioMax) {
-            return res.render('propiedades/mostrar', {
-                usuarioAdministrador,
-                propiedad,
-                page: propiedad.titulo,
-                csrfToken: req.csrfToken(),
-                usuario: req.usuario,
-                esVendedor: esVendedor(req.usuario?.id, propiedad.usuarioID),
-                errores: resultado.array(),
-                error: 'La propuesta debe estar dentro del rango de precios de la propiedad.'
+            // Almacenar el mensaje con la referencia a la propuesta
+            nuevoMensaje = await Mensaje.create({
+                mensaje,
+                propiedadID,
+                usuarioID,
+                propuestaID: nuevaPropuesta.id
+            });
+        } else {
+            // Almacenar solo el mensaje
+            nuevoMensaje = await Mensaje.create({
+                mensaje,
+                propiedadID,
+                usuarioID
             });
         }
-
-        // Almacenar la propuesta
-        await Propuesta.create({
-            mensaje,
-            propuesta,
-            propiedadID,
-            usuarioID
-        });
 
         return res.redirect(`/propiedad/${propiedadID}?enviado=true`);
     }

@@ -6,7 +6,7 @@ import Categoria from './Categoria.js';
 import Usuario from './Usuario.js';
 import Mensaje from './Mensaje.js';
 import Respuesta from './Respuesta.js';
-import Propuesta from './Propuestas.js';
+import Propuesta from './Propuesta.js';
 
 Propiedad.belongsTo(Precio, { foreignKey: 'precioID' });
 Propiedad.belongsTo(Categoria, { foreignKey: 'categoriaID' });
@@ -16,6 +16,7 @@ Usuario.hasMany(Propiedad, { foreignKey: 'usuarioID' });
 
 Mensaje.belongsTo(Propiedad, { foreignKey: 'propiedadID' });
 Mensaje.belongsTo(Usuario, { foreignKey: 'usuarioID' });
+Mensaje.belongsTo(Propuesta, { foreignKey: 'propuestaID' }); // Nueva asociación
 Mensaje.hasMany(Respuesta, { foreignKey: 'mensajeID' });
 
 Respuesta.belongsTo(Mensaje, { foreignKey: 'mensajeID' });

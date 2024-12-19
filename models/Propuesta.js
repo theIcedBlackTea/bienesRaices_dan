@@ -9,10 +9,6 @@ const Propuesta = db.define('propuestas', {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
-    mensaje: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
     propuesta: {
         type: DataTypes.INTEGER,
         allowNull: false
