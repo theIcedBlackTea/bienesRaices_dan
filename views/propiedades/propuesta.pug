@@ -1,7 +1,6 @@
 extends ../layout/admin 
 
 block contenido
-    <!-- <pre>#{JSON.stringify(propuestas, null, 2)}</pre> -->
     h2.text-2xl.font-bold.text-center= page
 
     a.rounded-lg.py-2.px-10.bg-action.text-sm.font-bold.text-center.text-white.uppercase.my-5.inline-block.w-full(href="/mis-propiedades" class="hover:bg-hoverAction sm:w-auto transition ease-in-out") Volver
@@ -21,5 +20,6 @@ block contenido
                                     span.text-xs= propuesta.usuario.email  
                                 p.text-xs.text-action Enviado: 
                                     span.text-action= formatearFecha(propuesta.createdAt)
+                                a(href=`/mensajes/${propuesta.propiedadID}` class="text-sm text-white")= `responder` 
         else 
             p.text-center.text-gray-600.p-5 No tienes ninguna propuesta

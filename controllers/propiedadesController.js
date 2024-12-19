@@ -437,6 +437,7 @@ const verMensajes = async (req, res) => {
                 model: Mensaje, as: 'mensajes',
                 include: [
                     { model: Usuario.scope('eliminarPassword'), as: 'usuario' },
+                    { model: Propuesta, as: 'propuesta' },
                     { model: Respuesta, as: 'respuestas', include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] }
                 ]
             },
