@@ -552,25 +552,27 @@ const obtenerConversaciones = async (req, res) => {
             include: [
                 { model: Propiedad, as: 'propiedade', include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] },
                 { model: Respuesta, as: 'respuestas', include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] },
-                { model: Usuario, as: 'usuario' }
+                { model: Usuario, as: 'usuario' },
+                { model: Propuesta, as: 'propuesta' } // Incluir el modelo Propuesta
             ]
-        })
+        });
 
         const mensajesRecibidos = await Mensaje.findAll({
             include: [
                 { model: Propiedad, as: 'propiedade', where: { usuarioID }, include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] },
                 { model: Usuario.scope('eliminarPassword'), as: 'usuario' },
-                { model: Respuesta, as: 'respuestas', include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] }
+                { model: Respuesta, as: 'respuestas', include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] },
+                { model: Propuesta, as: 'propuesta' } // Incluir el modelo Propuesta
             ]
-        })
+        });
 
         // Combinar los mensajes enviados y recibidos, eliminando duplicados
         const mensajes = [...mensajesEnviados, ...mensajesRecibidos].reduce((acc, mensaje) => {
             if (!acc.some(msg => msg.id === mensaje.id)) {
                 acc.push(mensaje);
             }
-            return acc
-        }, [])
+            return acc;
+        }, []);
 
         res.render('propiedades/conversaciones', {
             page: 'Mis Conversaciones',
@@ -579,10 +581,11 @@ const obtenerConversaciones = async (req, res) => {
             formatearFecha
         });
     } catch (error) {
-        console.error(error)
-        res.redirect('/mis-propiedades')
+        console.error(error);
+        res.redirect('/mis-propiedades');
     }
-}
+};
+
 const enviarPropuesta = async (req, res) => {
     const { mensaje, propuesta, propiedadID, precioMin, precioMax } = req.body;
     const { id: usuarioID } = req.usuario;
