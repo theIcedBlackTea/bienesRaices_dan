@@ -18,7 +18,7 @@ const Propuesta = db.define('propuestas', {
         allowNull: false,
         references: {
             model: Propiedad,
-            key: 'id'
+            key: 'id' //llave foránea a propiedades a través del id
         }
     },
     usuarioID: {
@@ -26,7 +26,7 @@ const Propuesta = db.define('propuestas', {
         allowNull: false,
         references: {
             model: Usuario,
-            key: 'id'
+            key: 'id' //llave foránea a usuario también usando el id
         }
     }
 }, {

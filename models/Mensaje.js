@@ -12,7 +12,7 @@ const Mensaje = db.define('mensajes', {
         allowNull: true, // Permitir que la propuestaID sea nula
         references: {
             model: Propuesta,
-            key: 'id'
+            key: 'id' //llave foránea de regreso a propuesta usando id  
         }
     }
 }, {

@@ -553,7 +553,7 @@ const obtenerConversaciones = async (req, res) => {
                 { model: Propiedad, as: 'propiedade', include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] },
                 { model: Respuesta, as: 'respuestas', include: [{ model: Usuario.scope('eliminarPassword'), as: 'usuario' }] },
                 { model: Usuario, as: 'usuario' },
-                { model: Propuesta, as: 'propuesta' } // Incluir el modelo Propuesta
+                { model: Propuesta, as: 'propuesta' } 
             ]
         });
 
